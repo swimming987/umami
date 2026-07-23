@@ -47,7 +47,7 @@ export function WebsitesTable({
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="300px">
+        <DataColumn id="trend" label={trendLabel} width="380px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
