@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { WebsitesTable } from './WebsitesTable';
+import { WebsiteTrendFilter } from './WebsiteTrendFilter';
 import { DataGrid } from '@/components/common/DataGrid';
 import { useLoginQuery, useNavigation, useUserWebsitesQuery } from '@/components/hooks';
 
@@ -32,7 +33,12 @@ export function WebsitesDataTable({
   );
 
   return (
-    <DataGrid query={queryResult} allowSearch allowPaging>
+    <DataGrid
+      query={queryResult}
+      allowSearch
+      allowPaging
+      renderActions={() => <WebsiteTrendFilter />}
+    >
       {({ data }) => (
         <WebsitesTable
           data={data}

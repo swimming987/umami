@@ -18,10 +18,24 @@ export function WebsitesTable({
   showActions,
   showStats,
   renderLink,
+  data,
   ...props
 }: WebsitesTableProps) {
   const { formatMessage, labels } = useMessages();
-  const { renderUrl } = useNavigation();
+  const {
+    renderUrl,
+    query: { trend = '7day' },
+  } = useNavigation();
+  const trendLabel =
+    {
+      '7day': `${formatMessage(labels.visitors)} Trend (7d)`,
+      '30day': `${formatMessage(labels.visitors)} Trend (30d)`,
+      '90day': `${formatMessage(labels.visitors)} Trend (90d)`,
+    }[trend] || `${formatMessage(labels.visitors)} Trend (7d)`;
+  const trendScaleMax = Math.max(
+    ...((data as any[]) || []).map(row => Number(row?.visitors) || 0),
+    1,
+  );
 
   const formatRate = (value?: number) => `${Math.round(Number(value) || 0)}%`;
   const formatDuration = (value?: number) =>
@@ -33,8 +47,8 @@ export function WebsitesTable({
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label="Trend (7d)" width="160px">
-          {(row: any) => <WebsiteTrend websiteId={row.id} />}
+        <DataColumn id="trend" label={trendLabel} width="160px">
+          {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
       {showStats && (
