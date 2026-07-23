@@ -47,7 +47,7 @@ export function WebsitesTable({
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="340px">
+        <DataColumn id="trend" label={trendLabel} width="300px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
@@ -81,13 +81,13 @@ export function WebsitesTable({
           id="visitDuration"
           label={formatMessage(labels.visitDuration)}
           align="end"
-          width="110px"
+          width="120px"
         >
           {(row: any) => formatDuration(row.visitDuration)}
         </DataColumn>
       )}
       {showActions && (
-        <DataColumn id="action" label=" " align="end">
+        <DataColumn id="action" label=" " align="end" width="56px">
           {(row: any) => {
             const websiteId = row.id;
 

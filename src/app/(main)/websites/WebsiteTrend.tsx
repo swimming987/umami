@@ -15,7 +15,7 @@ import {
   useTimezone,
 } from '@/components/hooks';
 
-const WIDTH = 300;
+const WIDTH = 240;
 const HEIGHT = 36;
 const PADDING_X = 4;
 const PADDING_TOP = 8;
@@ -66,6 +66,17 @@ function getPreviewPosition(rect: DOMRect) {
     left,
     top: clamp(top, 16, window.innerHeight - PREVIEW_HEIGHT - 16),
   };
+}
+
+function getAxisMax(value: number) {
+  if (!Number.isFinite(value) || value <= 0) return 5;
+
+  const withHeadroom = value * 1.15;
+  const magnitude = 10 ** Math.floor(Math.log10(withHeadroom));
+  const normalized = withHeadroom / magnitude;
+  const nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+
+  return nice * magnitude;
 }
 
 export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxValue: number }) {
@@ -135,6 +146,9 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
       ],
     };
   }, [sessions, websiteId, trendRange, formatMessage, labels, colors]);
+  const previewMaxValue = useMemo(() => {
+    return getAxisMax(Math.max(...sessions.map(({ y }) => Number(y) || 0), 0));
+  }, [sessions]);
   const previewChartOptions = useMemo(() => {
     return {
       scales: {
@@ -160,7 +174,7 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
         },
         y: {
           min: 0,
-          max: Math.max(maxValue, 1),
+          max: previewMaxValue,
           beginAtZero: true,
           grid: {
             color: colors.chart.line,
@@ -180,7 +194,7 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
         },
       },
     };
-  }, [range.startDate, range.endDate, locale, colors]);
+  }, [range.startDate, range.endDate, locale, colors, previewMaxValue]);
   const rangeLabel =
     {
       '7day': '7d',
