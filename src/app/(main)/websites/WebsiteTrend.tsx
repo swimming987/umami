@@ -1,4 +1,5 @@
 'use client';
+import { subDays } from 'date-fns';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTheme } from '@umami/react-zen';
@@ -79,6 +80,25 @@ function getAxisMax(value: number) {
   return nice * magnitude;
 }
 
+function getTrendRangeWithoutToday(value: string) {
+  const parsed = parseDateRange(value);
+
+  if (!parsed) return parsed;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (parsed.endDate >= today) {
+    return {
+      ...parsed,
+      startDate: subDays(parsed.startDate, 1),
+      endDate: subDays(parsed.endDate, 1),
+    };
+  }
+
+  return parsed;
+}
+
 export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxValue: number }) {
   const { get, useQuery } = useApi();
   const { formatMessage, labels } = useMessages();
@@ -95,7 +115,7 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewPosition, setPreviewPosition] = useState({ left: 0, top: 0 });
   const trendRange = ALLOWED_RANGES.includes(trend) ? trend : DEFAULT_RANGE;
-  const range = useMemo(() => parseDateRange(trendRange), [trendRange]);
+  const range = useMemo(() => getTrendRangeWithoutToday(trendRange), [trendRange]);
   const startAt = +toUtc(range.startDate);
   const endAt = +toUtc(range.endDate);
 

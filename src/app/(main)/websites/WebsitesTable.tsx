@@ -43,26 +43,26 @@ export function WebsitesTable({
 
   return (
     <DataTable {...props} data={data}>
-      <DataColumn id="name" label={formatMessage(labels.name)} width="220px">
+      <DataColumn id="name" label={formatMessage(labels.name)} width="200px">
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="300px">
+        <DataColumn id="trend" label={trendLabel} width="280px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="96px">
+        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="88px">
           {(row: any) => formatLongNumber(row.visitors ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="96px">
+        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="88px">
           {(row: any) => formatLongNumber(row.pageviews ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="96px">
+        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="88px">
           {(row: any) => formatLongNumber(row.visits ?? 0)}
         </DataColumn>
       )}
@@ -71,7 +71,7 @@ export function WebsitesTable({
           id="bounceRate"
           label={formatMessage(labels.bounceRate)}
           align="end"
-          width="110px"
+          width="96px"
         >
           {(row: any) => formatRate(row.bounceRate)}
         </DataColumn>
@@ -81,13 +81,13 @@ export function WebsitesTable({
           id="visitDuration"
           label={formatMessage(labels.visitDuration)}
           align="end"
-          width="120px"
+          width="96px"
         >
           {(row: any) => formatDuration(row.visitDuration)}
         </DataColumn>
       )}
       {showActions && (
-        <DataColumn id="action" label=" " align="end" width="56px">
+        <DataColumn id="action" label=" " align="end" width="40px">
           {(row: any) => {
             const websiteId = row.id;
 
