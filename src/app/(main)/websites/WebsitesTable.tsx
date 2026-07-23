@@ -40,6 +40,22 @@ export function WebsitesTable({
   const formatRate = (value?: number) => `${Math.round(Number(value) || 0)}%`;
   const formatDuration = (value?: number) =>
     formatShortTime(Math.abs(~~(Number(value) || 0)), ['m', 's'], ' ');
+  const renderCompactLabel = (primary: string, secondary: string) => (
+    <span
+      style={{
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        textAlign: 'right',
+        width: '100%',
+        lineHeight: 1.05,
+        gap: '2px',
+      }}
+    >
+      <span>{primary}</span>
+      <span>{secondary}</span>
+    </span>
+  );
 
   return (
     <DataTable {...props} data={data}>
@@ -69,7 +85,7 @@ export function WebsitesTable({
       {showStats && (
         <DataColumn
           id="bounceRate"
-          label={formatMessage(labels.bounceRate)}
+          label={renderCompactLabel('Bounce', 'rate')}
           align="end"
           width="96px"
         >
@@ -79,7 +95,7 @@ export function WebsitesTable({
       {showStats && (
         <DataColumn
           id="visitDuration"
-          label={formatMessage(labels.visitDuration)}
+          label={renderCompactLabel('Visit', 'duration')}
           align="end"
           width="96px"
         >
