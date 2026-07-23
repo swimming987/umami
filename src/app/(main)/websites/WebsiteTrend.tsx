@@ -13,7 +13,9 @@ import {
 
 const WIDTH = 140;
 const HEIGHT = 36;
-const PADDING = 2;
+const PADDING_X = 2;
+const PADDING_TOP = 5;
+const PADDING_BOTTOM = 3;
 const DEFAULT_RANGE = '7day';
 const ALLOWED_RANGES = ['7day', '30day', '90day'];
 
@@ -23,11 +25,13 @@ function createPath(data: TrendSeries, maxValue: number) {
   return data
     .map((value, index) => {
       const x =
-        data.length > 1 ? PADDING + (index / (data.length - 1)) * (WIDTH - PADDING * 2) : WIDTH / 2;
+        data.length > 1
+          ? PADDING_X + (index / (data.length - 1)) * (WIDTH - PADDING_X * 2)
+          : WIDTH / 2;
       const y =
         HEIGHT -
-        PADDING -
-        ((Number(value.y) || 0) / Math.max(maxValue, 1)) * (HEIGHT - PADDING * 2);
+        PADDING_BOTTOM -
+        ((Number(value.y) || 0) / Math.max(maxValue, 1)) * (HEIGHT - PADDING_TOP - PADDING_BOTTOM);
 
       return `${x},${y}`;
     })
@@ -85,10 +89,10 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
       role="img"
     >
       <line
-        x1={PADDING}
-        x2={WIDTH - PADDING}
-        y1={HEIGHT - PADDING}
-        y2={HEIGHT - PADDING}
+        x1={PADDING_X}
+        x2={WIDTH - PADDING_X}
+        y1={HEIGHT - PADDING_BOTTOM}
+        y2={HEIGHT - PADDING_BOTTOM}
         stroke={colors.chart.line}
         strokeWidth="1"
       />
@@ -96,6 +100,8 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
         fill="none"
         stroke={colors.chart.visitors.borderColor}
         strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         points={createPath(sessions, maxValue)}
       />
     </svg>
