@@ -15,7 +15,7 @@ import {
   useTimezone,
 } from '@/components/hooks';
 
-const WIDTH = 140;
+const WIDTH = 200;
 const HEIGHT = 36;
 const PADDING_X = 4;
 const PADDING_TOP = 8;

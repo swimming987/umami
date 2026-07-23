@@ -47,22 +47,22 @@ export function WebsitesTable({
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="160px">
+        <DataColumn id="trend" label={trendLabel} width="300px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="120px">
+        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="96px">
           {(row: any) => formatLongNumber(row.visitors ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="120px">
+        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="96px">
           {(row: any) => formatLongNumber(row.pageviews ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="120px">
+        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="96px">
           {(row: any) => formatLongNumber(row.visits ?? 0)}
         </DataColumn>
       )}
@@ -71,7 +71,7 @@ export function WebsitesTable({
           id="bounceRate"
           label={formatMessage(labels.bounceRate)}
           align="end"
-          width="140px"
+          width="110px"
         >
           {(row: any) => formatRate(row.bounceRate)}
         </DataColumn>
@@ -81,7 +81,7 @@ export function WebsitesTable({
           id="visitDuration"
           label={formatMessage(labels.visitDuration)}
           align="end"
-          width="150px"
+          width="110px"
         >
           {(row: any) => formatDuration(row.visitDuration)}
         </DataColumn>
