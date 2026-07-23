@@ -40,54 +40,38 @@ export function WebsitesTable({
   const formatRate = (value?: number) => `${Math.round(Number(value) || 0)}%`;
   const formatDuration = (value?: number) =>
     formatShortTime(Math.abs(~~(Number(value) || 0)), ['m', 's'], ' ');
-  const renderCompactLabel = (primary: string, secondary: string) => (
-    <span
-      style={{
-        display: 'inline-flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        textAlign: 'right',
-        width: '100%',
-        lineHeight: 1.05,
-        gap: '2px',
-      }}
-    >
-      <span>{primary}</span>
-      <span>{secondary}</span>
-    </span>
-  );
 
   return (
     <DataTable {...props} data={data}>
-      <DataColumn id="name" label={formatMessage(labels.name)} width="200px">
+      <DataColumn id="name" label={formatMessage(labels.name)} width="190px">
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="280px">
+        <DataColumn id="trend" label={trendLabel} width="270px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="88px">
+        <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="82px">
           {(row: any) => formatLongNumber(row.visitors ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="88px">
+        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="82px">
           {(row: any) => formatLongNumber(row.pageviews ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="88px">
+        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="82px">
           {(row: any) => formatLongNumber(row.visits ?? 0)}
         </DataColumn>
       )}
       {showStats && (
         <DataColumn
           id="bounceRate"
-          label={renderCompactLabel('Bounce', 'rate')}
+          label={formatMessage(labels.bounceRate)}
           align="end"
-          width="96px"
+          width="112px"
         >
           {(row: any) => formatRate(row.bounceRate)}
         </DataColumn>
@@ -95,15 +79,15 @@ export function WebsitesTable({
       {showStats && (
         <DataColumn
           id="visitDuration"
-          label={renderCompactLabel('Visit', 'duration')}
+          label={formatMessage(labels.visitDuration)}
           align="end"
-          width="96px"
+          width="122px"
         >
           {(row: any) => formatDuration(row.visitDuration)}
         </DataColumn>
       )}
       {showActions && (
-        <DataColumn id="action" label=" " align="end" width="40px">
+        <DataColumn id="action" label=" " align="end" width="36px">
           {(row: any) => {
             const websiteId = row.id;
 
