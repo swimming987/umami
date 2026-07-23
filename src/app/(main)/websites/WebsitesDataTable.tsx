@@ -17,7 +17,14 @@ export function WebsitesDataTable({
   showActions?: boolean;
 }) {
   const { user } = useLoginQuery();
-  const queryResult = useUserWebsitesQuery({ userId: userId || user?.id, teamId });
+  const queryResult = useUserWebsitesQuery(
+    { userId: userId || user?.id, teamId },
+    {
+      includeStats: '1',
+      orderBy: 'visitors',
+      sortDescending: 'true',
+    },
+  );
   const { renderUrl } = useNavigation();
 
   const renderLink = (row: any) => (
@@ -32,6 +39,7 @@ export function WebsitesDataTable({
           showActions={showActions}
           allowEdit={allowEdit}
           allowView={allowView}
+          showStats
           renderLink={renderLink}
         />
       )}

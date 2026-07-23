@@ -4,9 +4,13 @@ import { canCreateTeamWebsite, canCreateWebsite } from '@/permissions';
 import { json, unauthorized } from '@/lib/response';
 import { uuid } from '@/lib/crypto';
 import { getQueryFilters, parseRequest } from '@/lib/request';
-import { pagingParams, searchParams } from '@/lib/schema';
+import { dateRangeParams, pagingParams, searchParams } from '@/lib/schema';
 import { createWebsite, getWebsiteCount } from '@/queries/prisma';
-import { getAllUserWebsitesIncludingTeamOwner, getUserWebsites } from '@/queries/prisma/website';
+import {
+  getAllUserWebsitesIncludingTeamOwner,
+  getUserWebsites,
+  getUserWebsitesWithStats,
+} from '@/queries/prisma/website';
 
 const CLOUD_WEBSITE_LIMIT = 3;
 
@@ -14,7 +18,9 @@ export async function GET(request: Request) {
   const schema = z.object({
     ...pagingParams,
     ...searchParams,
+    ...dateRangeParams,
     includeTeams: z.string().optional(),
+    includeStats: z.string().optional(),
   });
 
   const { auth, query, error } = await parseRequest(request, schema);
@@ -29,6 +35,10 @@ export async function GET(request: Request) {
 
   if (query.includeTeams) {
     return json(await getAllUserWebsitesIncludingTeamOwner(userId, filters));
+  }
+
+  if (query.includeStats) {
+    return json(await getUserWebsitesWithStats(userId, filters));
   }
 
   return json(await getUserWebsites(userId, filters));
