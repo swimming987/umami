@@ -1,6 +1,5 @@
 'use client';
 import { WebsitesDataTable } from './WebsitesDataTable';
-import { WebsitesChart } from './WebsitesChart';
 import { WebsitesDateFilter } from './WebsitesDateFilter';
 import { WebsiteAddButton } from './WebsiteAddButton';
 import { useMessages, useNavigation } from '@/components/hooks';
@@ -22,9 +21,6 @@ export function WebsitesPage() {
             <WebsiteAddButton teamId={teamId} />
           </Row>
         </PageHeader>
-        <Panel>
-          <WebsitesChart teamId={teamId} />
-        </Panel>
         <Panel>
           <WebsitesDataTable teamId={teamId} />
         </Panel>

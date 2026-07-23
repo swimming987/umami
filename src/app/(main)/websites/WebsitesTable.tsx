@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Icon, DataTable, DataColumn, DataTableProps } from '@umami/react-zen';
+import { WebsiteTrend } from './WebsiteTrend';
 import { LinkButton } from '@/components/common/LinkButton';
 import { useMessages, useNavigation } from '@/components/hooks';
 import { SquarePen } from '@/components/icons';
@@ -31,6 +32,11 @@ export function WebsitesTable({
       <DataColumn id="name" label={formatMessage(labels.name)}>
         {renderLink}
       </DataColumn>
+      {showStats && (
+        <DataColumn id="trend" label="Trend (7d)" width="160px">
+          {(row: any) => <WebsiteTrend websiteId={row.id} />}
+        </DataColumn>
+      )}
       {showStats && (
         <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="120px">
           {(row: any) => formatLongNumber(row.visitors ?? 0)}

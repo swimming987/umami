@@ -17,11 +17,6 @@ export interface WebsiteStatsRow {
   visitDuration: number;
 }
 
-export interface WebsiteTrendData {
-  pageviews: { x: string; y: number }[];
-  sessions: { x: string; y: number }[];
-}
-
 export async function findWebsite(criteria: Prisma.WebsiteFindUniqueArgs) {
   return prisma.client.website.findUnique(criteria);
 }
@@ -341,145 +336,6 @@ async function getClickhouseWebsiteStatsPage(
   };
 }
 
-async function getWebsiteTrend(
-  websiteWhere: Prisma.WebsiteWhereInput,
-  filters: QueryFilters = {},
-): Promise<WebsiteTrendData> {
-  return runQuery({
-    [PRISMA]: () => getRelationalWebsiteTrend(websiteWhere, filters),
-    [CLICKHOUSE]: () => getClickhouseWebsiteTrend(websiteWhere, filters),
-  });
-}
-
-async function getRelationalWebsiteTrend(
-  websiteWhere: Prisma.WebsiteWhereInput,
-  filters: QueryFilters,
-): Promise<WebsiteTrendData> {
-  const { timezone = 'utc', unit = 'day' } = filters;
-  const search = filters.search?.trim();
-  const queryParams: Record<string, any> = {
-    startDate: filters.startDate,
-    endDate: filters.endDate,
-  };
-  let searchQuery = '';
-
-  if (websiteWhere.userId) {
-    queryParams.userId = websiteWhere.userId;
-  }
-
-  if (websiteWhere.teamId) {
-    queryParams.teamId = websiteWhere.teamId;
-  }
-
-  if (search) {
-    queryParams.search = `%${search}%`;
-    searchQuery = `and (website.name ilike {{search}} or website.domain ilike {{search}})`;
-  }
-
-  const filteredWebsitesQuery = `
-    with filtered_websites as (
-      select
-        website.website_id as "id"
-      from website
-      where website.deleted_at is null
-        ${websiteWhere.userId ? `and website.user_id = {{userId::uuid}}` : ''}
-        ${websiteWhere.teamId ? `and website.team_id = {{teamId::uuid}}` : ''}
-        ${searchQuery}
-    )
-  `;
-
-  const pageviews = await prisma.rawQuery(
-    `
-    ${filteredWebsitesQuery}
-    select
-      ${prisma.getDateSQL('website_event.created_at', unit, timezone)} x,
-      count(*) y
-    from website_event
-    join filtered_websites on filtered_websites.id = website_event.website_id
-    where website_event.created_at between {{startDate}} and {{endDate}}
-      and website_event.event_type != 2
-    group by 1
-    order by 1
-    `,
-    queryParams,
-  );
-
-  const sessions = await prisma.rawQuery(
-    `
-    ${filteredWebsitesQuery}
-    select
-      ${prisma.getDateSQL('website_event.created_at', unit, timezone)} x,
-      count(distinct website_event.session_id) y
-    from website_event
-    join filtered_websites on filtered_websites.id = website_event.website_id
-    where website_event.created_at between {{startDate}} and {{endDate}}
-      and website_event.event_type != 2
-    group by 1
-    order by 1
-    `,
-    queryParams,
-  );
-
-  return { pageviews, sessions };
-}
-
-async function getClickhouseWebsiteTrend(
-  websiteWhere: Prisma.WebsiteWhereInput,
-  filters: QueryFilters,
-): Promise<WebsiteTrendData> {
-  const { timezone = 'utc', unit = 'day' } = filters;
-  const websites = await prisma.client.website.findMany({
-    where: websiteWhere,
-    select: {
-      id: true,
-    },
-  });
-
-  if (!websites.length) {
-    return { pageviews: [], sessions: [] };
-  }
-
-  const ids = websites.map(website => `'${website.id}'`).join(', ');
-
-  const pageviews = await clickhouse.rawQuery<{ x: string; y: number }[]>(
-    `
-    select
-      ${clickhouse.getDateSQL('created_at', unit, timezone)} as x,
-      count(*) as y
-    from website_event
-    where website_id in (${ids})
-      and created_at between {startDate:DateTime64} and {endDate:DateTime64}
-      and event_type != 2
-    group by x
-    order by x
-    `,
-    {
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    },
-  );
-
-  const sessions = await clickhouse.rawQuery<{ x: string; y: number }[]>(
-    `
-    select
-      ${clickhouse.getDateSQL('created_at', unit, timezone)} as x,
-      uniq(session_id) as y
-    from website_event
-    where website_id in (${ids})
-      and created_at between {startDate:DateTime64} and {endDate:DateTime64}
-      and event_type != 2
-    group by x
-    order by x
-    `,
-    {
-      startDate: filters.startDate,
-      endDate: filters.endDate,
-    },
-  );
-
-  return { pageviews, sessions };
-}
-
 export async function getUserWebsites(userId: string, filters?: QueryFilters) {
   return getWebsites(
     {
@@ -534,28 +390,6 @@ export async function getTeamWebsites(teamId: string, filters?: QueryFilters) {
 
 export async function getTeamWebsitesWithStats(teamId: string, filters?: QueryFilters) {
   return getWebsiteStatsPage(
-    {
-      teamId,
-      deletedAt: null,
-      ...getWebsiteSearchWhere(filters?.search),
-    },
-    filters,
-  );
-}
-
-export async function getUserWebsitesTrend(userId: string, filters?: QueryFilters) {
-  return getWebsiteTrend(
-    {
-      userId,
-      deletedAt: null,
-      ...getWebsiteSearchWhere(filters?.search),
-    },
-    filters,
-  );
-}
-
-export async function getTeamWebsitesTrend(teamId: string, filters?: QueryFilters) {
-  return getWebsiteTrend(
     {
       teamId,
       deletedAt: null,
