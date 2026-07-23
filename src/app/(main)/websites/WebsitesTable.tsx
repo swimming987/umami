@@ -42,7 +42,7 @@ export function WebsitesTable({
     formatShortTime(Math.abs(~~(Number(value) || 0)), ['m', 's'], ' ');
 
   return (
-    <DataTable {...props}>
+    <DataTable {...props} data={data}>
       <DataColumn id="name" label={formatMessage(labels.name)}>
         {renderLink}
       </DataColumn>
