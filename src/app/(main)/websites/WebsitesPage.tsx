@@ -1,8 +1,10 @@
 'use client';
 import { WebsitesDataTable } from './WebsitesDataTable';
+import { WebsitesChart } from './WebsitesChart';
+import { WebsitesDateFilter } from './WebsitesDateFilter';
 import { WebsiteAddButton } from './WebsiteAddButton';
 import { useMessages, useNavigation } from '@/components/hooks';
-import { Column } from '@umami/react-zen';
+import { Column, Row } from '@umami/react-zen';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Panel } from '@/components/common/Panel';
 import { PageBody } from '@/components/common/PageBody';
@@ -15,8 +17,14 @@ export function WebsitesPage() {
     <PageBody>
       <Column gap="6" margin="2">
         <PageHeader title={formatMessage(labels.websites)}>
-          <WebsiteAddButton teamId={teamId} />
+          <Row alignItems="center" gap="4" wrap="wrap">
+            <WebsitesDateFilter />
+            <WebsiteAddButton teamId={teamId} />
+          </Row>
         </PageHeader>
+        <Panel>
+          <WebsitesChart teamId={teamId} />
+        </Panel>
         <Panel>
           <WebsitesDataTable teamId={teamId} />
         </Panel>

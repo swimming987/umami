@@ -31,20 +31,19 @@ export function WebsitesTable({
       <DataColumn id="name" label={formatMessage(labels.name)}>
         {renderLink}
       </DataColumn>
-      <DataColumn id="domain" label={formatMessage(labels.domain)} />
       {showStats && (
         <DataColumn id="visitors" label={formatMessage(labels.visitors)} align="end" width="120px">
           {(row: any) => formatLongNumber(row.visitors ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="120px">
-          {(row: any) => formatLongNumber(row.visits ?? 0)}
+        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="120px">
+          {(row: any) => formatLongNumber(row.pageviews ?? 0)}
         </DataColumn>
       )}
       {showStats && (
-        <DataColumn id="pageviews" label={formatMessage(labels.views)} align="end" width="120px">
-          {(row: any) => formatLongNumber(row.pageviews ?? 0)}
+        <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="120px">
+          {(row: any) => formatLongNumber(row.visits ?? 0)}
         </DataColumn>
       )}
       {showStats && (
