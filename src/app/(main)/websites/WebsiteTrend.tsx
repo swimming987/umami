@@ -160,6 +160,7 @@ export function WebsiteTrend({ websiteId, maxValue }: { websiteId: string; maxVa
         },
         y: {
           min: 0,
+          max: Math.max(maxValue, 1),
           beginAtZero: true,
           grid: {
             color: colors.chart.line,

@@ -43,11 +43,11 @@ export function WebsitesTable({
 
   return (
     <DataTable {...props} data={data}>
-      <DataColumn id="name" label={formatMessage(labels.name)}>
+      <DataColumn id="name" label={formatMessage(labels.name)} width="220px">
         {renderLink}
       </DataColumn>
       {showStats && (
-        <DataColumn id="trend" label={trendLabel} width="380px">
+        <DataColumn id="trend" label={trendLabel} width="340px">
           {(row: any) => <WebsiteTrend websiteId={row.id} maxValue={trendScaleMax} />}
         </DataColumn>
       )}
